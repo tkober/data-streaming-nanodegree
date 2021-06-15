@@ -9,6 +9,11 @@ from confluent_kafka.avro import AvroProducer
 
 logger = logging.getLogger(__name__)
 
+BROKER_URLS = 'PLAINTEXT://localhost:9092'
+# Use this if if you added the other two brokers in the docker-compose file
+#BROKER_URLS = 'PLAINTEXT://localhost:9092,PLAINTEXT://localhost:9093,PLAINTEXT://localhost:9094'
+SCHEMA_REGISTRY_URL = 'http://localhost:8081'
+CLIENT_TIMEOUT = 3
 
 class Producer:
     """Defines and provides common functionality amongst Producers"""
@@ -30,6 +35,7 @@ class Producer:
         self.value_schema = value_schema
         self.num_partitions = num_partitions
         self.num_replicas = num_replicas
+        self.kafka_client = AdminClient({'bootstrap.servers': BROKER_URLS})
 
         #
         #
@@ -38,9 +44,8 @@ class Producer:
         #
         #
         self.broker_properties = {
-            # TODO
-            # TODO
-            # TODO
+            'bootstrap.servers': BROKER_URLS,
+            'schema.registry.url': SCHEMA_REGISTRY_URL
         }
 
         # If the topic does not already exist, try to create it
@@ -49,8 +54,11 @@ class Producer:
             Producer.existing_topics.add(self.topic_name)
 
         # TODO: Configure the AvroProducer
-        # self.producer = AvroProducer(
-        # )
+        self.producer = AvroProducer(
+            config=self.broker_properties,
+            default_key_schema=self.key_schema,
+            default_value_schema=self.value_schema
+        )
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
@@ -60,7 +68,34 @@ class Producer:
         # the Kafka Broker.
         #
         #
-        logger.info("topic creation kafka integration incomplete - skipping")
+
+        # Use the CLIENT_TIMEOUT so that the client does not wait infinite if one of the brokers is not available.
+        # Here it is mostly due to missing 2 brokers in the docker-compose file.
+        if self.kafka_client.list_topics(timeout=CLIENT_TIMEOUT).topics.get(self.topic_name) is not None:
+            logger.info(f'Existing topic "{self.topic_name}" found.')
+        else:
+            logger.warning(f'Topic "{self.topic_name}" not present yet.')
+
+            newTopic = NewTopic(
+                topic=self.topic_name,
+                num_partitions=self.num_partitions,
+                replication_factor=self.num_replicas,
+                config={
+                    'cleanup.policy': 'compact',
+                    'compression.type': 'lz4',
+                    'delete.retention.ms': 2000,
+                    'file.delete.delay.ms': 30000,
+                    'acks': 'all'
+                }
+            )
+            futures = self.kafka_client.create_topics([newTopic])
+            for topic, future in futures.items():
+                try:
+                    future.result()
+                    logger.warning(f'Created topic "{topic}".')
+                except Exception as e:
+                    logger.error(f'Failed to create topic "{topic}": {e}')
+                    raise
 
     def time_millis(self):
         return int(round(time.time() * 1000))
@@ -72,7 +107,8 @@ class Producer:
         # TODO: Write cleanup code for the Producer here
         #
         #
-        logger.info("producer close incomplete - skipping")
+        self.producer.flush()
+        logger.info(f'Flushed producer for topic {self.topic_name}')
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""
