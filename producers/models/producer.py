@@ -2,8 +2,6 @@
 import logging
 import time
 
-
-from confluent_kafka import avro
 from confluent_kafka.admin import AdminClient, NewTopic
 from confluent_kafka.avro import AvroProducer
 
@@ -23,11 +21,11 @@ class Producer:
 
     def __init__(
         self,
-        topic_name,
-        key_schema,
-        value_schema=None,
-        num_partitions=1,
-        num_replicas=1,
+        topic_name: str,
+        key_schema: str,
+        value_schema: str = None,
+        num_partitions: int = 1,
+        num_replicas: int = 1,
     ):
         """Initializes a Producer object with basic settings"""
         self.topic_name = topic_name
@@ -53,7 +51,7 @@ class Producer:
             self.create_topic()
             Producer.existing_topics.add(self.topic_name)
 
-        # TODO: Configure the AvroProducer
+        # Configure the AvroProducer
         self.producer = AvroProducer(
             config=self.broker_properties,
             default_key_schema=self.key_schema,
@@ -62,12 +60,6 @@ class Producer:
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
-        #
-        #
-        # TODO: Write code that creates the topic for this producer if it does not already exist on
-        # the Kafka Broker.
-        #
-        #
 
         # Use the CLIENT_TIMEOUT so that the client does not wait infinite if one of the brokers is not available.
         # Here it is mostly due to missing 2 brokers in the docker-compose file.
@@ -96,19 +88,11 @@ class Producer:
                     logger.error(f'Failed to create topic "{topic}": {e}')
                     raise
 
-    def time_millis(self):
-        return int(round(time.time() * 1000))
-
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-        #
-        #
-        # TODO: Write cleanup code for the Producer here
-        #
-        #
         self.producer.flush()
         logger.info(f'Flushed producer for topic {self.topic_name}')
 
-    def time_millis(self):
+    def time_millis(self) -> int:
         """Use this function to get the key for Kafka Events"""
         return int(round(time.time() * 1000))
