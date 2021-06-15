@@ -58,7 +58,9 @@ class Station(Producer):
                 'train_status': train.status.name, # Use the name here since it is easier to read than the numeric enum value
                 'prev_station_id': prev_station_id,
                 'prev_direction': prev_direction
-            }
+            },
+            value_schema=self.value_schema,
+            key_schema=self.key_schema
         )
 
     def __str__(self):
