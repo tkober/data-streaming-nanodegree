@@ -84,8 +84,7 @@ class Producer:
                     'cleanup.policy': 'compact',
                     'compression.type': 'lz4',
                     'delete.retention.ms': 2000,
-                    'file.delete.delay.ms': 30000,
-                    'acks': 'all'
+                    'file.delete.delay.ms': 30000
                 }
             )
             futures = self.kafka_client.create_topics([newTopic])
