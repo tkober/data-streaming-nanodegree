@@ -1,5 +1,6 @@
 """Methods pertaining to loading and configuring CTA "L" station data."""
 import logging
+from dataclasses import dataclass, asdict
 from pathlib import Path
 
 from confluent_kafka import avro
@@ -9,6 +10,16 @@ from models.producer import Producer
 
 logger = logging.getLogger(__name__)
 
+# Define a Data Transfer Objects so changes to the schema only need to be carried over to one place.
+@dataclass(frozen=True)
+class StationArrivalDto:
+    station_id: int
+    train_id: str
+    direction: str
+    line: str
+    train_status: str
+    prev_station_id: int
+    prev_direction: str
 
 class Station(Producer):
     """Defines a single station"""
@@ -48,18 +59,19 @@ class Station(Producer):
     def run(self, train, direction, prev_station_id, prev_direction):
         """Simulates train arrivals at this station"""
 
+        valueDto = StationArrivalDto(
+            station_id=self.station_id,
+            train_id=train.train_id,
+            direction=direction,
+            line=self.color.name,
+            train_status=train.status.name,
+            prev_station_id=prev_station_id,
+            prev_direction=prev_direction
+        )
         self.producer.produce(
             topic=self.topic_name,
             key={"timestamp": self.time_millis()},
-            value={
-                'station_id': self.station_id,
-                'train_id': train.train_id,
-                'direction': direction,
-                'line': self.color.name,
-                'train_status': train.status.name, # Use the name here since it is easier to read than the numeric enum value
-                'prev_station_id': prev_station_id,
-                'prev_direction': prev_direction
-            },
+            value=asdict(valueDto),
             value_schema=self.value_schema,
             key_schema=self.key_schema
         )

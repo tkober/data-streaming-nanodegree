@@ -1,5 +1,6 @@
 """Creates a turnstile data producer"""
 import logging
+from dataclasses import dataclass, asdict
 from pathlib import Path
 
 from confluent_kafka import avro
@@ -10,6 +11,12 @@ from models.turnstile_hardware import TurnstileHardware
 
 logger = logging.getLogger(__name__)
 
+# Define a Data Transfer Objects so changes to the schema only need to be carried over to one place.
+@dataclass(frozen=True)
+class TurnstileEntryDto:
+    station_id: int
+    station_name: str
+    line: str
 
 class Turnstile(Producer):
     key_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/turnstile_key.json")
@@ -43,14 +50,16 @@ class Turnstile(Producer):
         num_entries = self.turnstile_hardware.get_entries(timestamp_for_mock, time_step)
 
         for i in range(num_entries):
+
+            valueDto = TurnstileEntryDto(
+                station_id=self.station.station_id,
+                station_name=self.station.name,
+                line=self.station.color.name
+            )
             self.producer.produce(
                 topic=self.topic_name,
                 key={"timestamp": self.time_millis()},
-                value={
-                    'station_id': self.station.station_id,
-                    'station_name': self.station.name,
-                    'line': self.station.color.name
-                },
+                value=asdict(valueDto),
                 value_schema=self.value_schema,
                 key_schema=self.key_schema
             )
