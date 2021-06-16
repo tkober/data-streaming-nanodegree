@@ -11,6 +11,7 @@ import requests
 
 from models.producer import Producer
 
+from models.timestamp_key_dto import TimestampKeyDto
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +20,6 @@ logger = logging.getLogger(__name__)
 class WeatherUpdateDto:
     temperature: float
     status: str
-
-@dataclass(frozen=True)
-class WeatherUpdateKeyDto:
-    timestamp: int
 
 class Weather(Producer):
     """Defines a simulated weather model"""
@@ -78,7 +75,7 @@ class Weather(Producer):
     def run(self, month):
         self._set_weather(month)
 
-        keyDto = WeatherUpdateKeyDto(self.time_millis())
+        keyDto = TimestampKeyDto(self.time_millis())
         valueDto = WeatherUpdateDto(temperature=self.temp, status=self.status.name)
 
         headers = { 'Content-Type': 'application/vnd.kafka.avro.v2+json' }

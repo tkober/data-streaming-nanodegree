@@ -7,6 +7,7 @@ from confluent_kafka import avro
 
 from models import Turnstile
 from models.producer import Producer
+from models.timestamp_key_dto import TimestampKeyDto
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +69,11 @@ class Station(Producer):
             prev_station_id=prev_station_id,
             prev_direction=prev_direction
         )
+        keyDto = TimestampKeyDto(self.time_millis())
+
         self.producer.produce(
             topic=self.topic_name,
-            key={"timestamp": self.time_millis()},
+            key=asdict(keyDto),
             value=asdict(valueDto),
             value_schema=self.value_schema,
             key_schema=self.key_schema
