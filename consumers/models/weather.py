@@ -4,6 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+WEATHER_UPDATE_TOPIC = 'weather.update.v1'
 
 class Weather:
     """Defines the Weather model"""
@@ -15,9 +16,7 @@ class Weather:
 
     def process_message(self, message):
         """Handles incoming weather data"""
-        logger.info("weather process_message is incomplete - skipping")
-        #
-        #
-        # TODO: Process incoming weather messages. Set the temperature and status.
-        #
-        #
+
+        if WEATHER_UPDATE_TOPIC == message.topic():
+            self.temperature = message.value['temperature']
+            self.status = message.value['status']
