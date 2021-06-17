@@ -37,8 +37,6 @@ class Weather(Producer):
     summer_months = set((6, 7, 8))
 
     def __init__(self, month):
-        # Use a versioning so we do not have to setup the docker container once we run into schema conflicts
-        # TODO: Remove in final version
         super().__init__(
             "org.chicago.cta.weather.update.v1",
             key_schema=Weather.key_schema,

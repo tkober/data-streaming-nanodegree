@@ -32,8 +32,6 @@ class Turnstile(Producer):
             .replace("'", "")
         )
 
-        # Use a versioning so we do not have to setup the docker container once we run into schema conflicts
-        # TODO: Remove in final version
         topic_name = 'org.chicago.cta.turnstile.entry.v1'
         super().__init__(
             topic_name,
