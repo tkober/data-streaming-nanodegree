@@ -31,7 +31,7 @@ def configure_connector():
         "table.whitelist": "stations",
         "mode": "incrementing",
         "incrementing.column.name": "stop_id",
-        "topic.prefix": "cta.information.",
+        "topic.prefix": "org.chicago.cta.",
         # Poll once a day since the stations table does not hold volatile information.
         "poll.interval.ms": str(1000 * 60 * 60 * 24),
         "tasks.max": 1

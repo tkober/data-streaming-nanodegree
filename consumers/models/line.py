@@ -8,8 +8,8 @@ from models import Station
 
 logger = logging.getLogger(__name__)
 
-STATION_ARRIVAL_TOPIC_REGEX = r'org\.chicago\.cta\..+\.arrival\.v1'
-TRANSFORMED_STATIONS_TOPIC = 'org.chicago.cta.station.information.transformed.v1'
+STATION_ARRIVAL_TOPIC_REGEX = r'org\.chicago\.cta\.station\..+\.arrival\.v1'
+TRANSFORMED_STATIONS_TOPIC = 'org.chicago.cta.stations.table.v1'
 TURNSTILE_SUMMARY_TOPIC = 'turnstile_summary'
 
 class Line:

@@ -21,7 +21,7 @@ class Lines:
         """Processes a station message"""
         if "org.chicago.cta.station" in message.topic():
             value = message.value()
-            if message.topic() == "org.chicago.cta.station.information.transformed.v1":
+            if message.topic() == "org.chicago.cta.stations.table.v1":
                 value = json.loads(value)
 
             if value["line"] == "green":

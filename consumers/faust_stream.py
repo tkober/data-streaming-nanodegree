@@ -30,8 +30,8 @@ class TransformedStation(faust.Record):
     line: str
 
 
-CONNECT_TOPIC_NAME = 'org.chicago.cta.station.information'
-TRANSFORMED_TOPIC_NAME = f'{CONNECT_TOPIC_NAME}.transformed.v1'
+CONNECT_TOPIC_NAME = 'org.chicago.cta.stations'
+TRANSFORMED_TOPIC_NAME = f'{CONNECT_TOPIC_NAME}.table.v1'
 
 app = faust.App(
     "stations-stream",
