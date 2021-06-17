@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 STATION_ARRIVAL_TOPIC_REGEX = r'org\.chicago\.cta\.station\..+\.arrival\.v1'
 TRANSFORMED_STATIONS_TOPIC = 'org.chicago.cta.stations.table.v1'
-TURNSTILE_SUMMARY_TOPIC = 'turnstile_summary'
+TURNSTILE_SUMMARY_TOPIC = 'TURNSTILE_SUMMARY'
 
 class Line:
     """Defines the Line Model"""
@@ -29,6 +29,7 @@ class Line:
 
     def _handle_station(self, value):
         """Adds the station to this Line's data model"""
+        logger.debug(f'handling station: { value }')
         if value["line"] != self.color:
             return
         self.stations[value["station_id"]] = Station.from_message(value)

@@ -18,5 +18,6 @@ class Weather:
         """Handles incoming weather data"""
 
         if WEATHER_UPDATE_TOPIC == message.topic():
-            self.temperature = message.value['temperature']
-            self.status = message.value['status']
+            logger.debug(f'Weather update: {message.value()}')
+            self.temperature = message.value()['temperature']
+            self.status = message.value()['status']
