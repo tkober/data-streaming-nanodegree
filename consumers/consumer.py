@@ -85,7 +85,7 @@ class KafkaConsumer:
             return 1
 
         except (RuntimeError, SerializerError) as e:
-            logger.error(f'Ciritical error occurred during poll for topic "{self.topic_name_pattern}":\n{e}')
+            logger.fatal(f'Fatal error occurred during poll for topic "{self.topic_name_pattern}":\n{e}')
             exit(-1)
 
 
