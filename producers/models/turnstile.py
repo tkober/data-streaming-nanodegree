@@ -34,7 +34,7 @@ class Turnstile(Producer):
 
         # Use a versioning so we do not have to setup the docker container once we run into schema conflicts
         # TODO: Remove in final version
-        topic_name = f'station.{station_name}.turnstile.entry.v1'
+        topic_name = 'turnstile.entry.v1'
         super().__init__(
             topic_name,
             key_schema=Turnstile.key_schema,
