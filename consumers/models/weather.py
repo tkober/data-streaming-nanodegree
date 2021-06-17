@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-WEATHER_UPDATE_TOPIC = 'weather.update.v1'
+WEATHER_UPDATE_TOPIC = 'org.chicago.cta.weather.update.v1'
 
 class Weather:
     """Defines the Weather model"""

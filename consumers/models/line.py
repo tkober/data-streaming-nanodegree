@@ -8,8 +8,8 @@ from models import Station
 
 logger = logging.getLogger(__name__)
 
-STATION_ARRIVAL_TOPIC_REGEX = r'station\..+\.arrival\.v1'
-TURNSTILE_TOPIC = 'turnstile.entry.v1'
+STATION_ARRIVAL_TOPIC_REGEX = r'org\.chicago\.cta\..+\.arrival\.v1'
+TRANSFORMED_STATIONS_TOPIC = 'org.chicago.cta.station.information.transformed.v1'
 TURNSTILE_SUMMARY_TOPIC = 'turnstile_summary'
 
 class Line:
@@ -62,7 +62,7 @@ class Line:
         """Given a kafka message, extract data"""
 
         topic = message.topic()
-        if topic == TURNSTILE_TOPIC:
+        if topic == TRANSFORMED_STATIONS_TOPIC:
             try:
                 value = json.loads(message.value())
                 self._handle_station(value)

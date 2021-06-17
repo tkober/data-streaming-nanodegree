@@ -35,12 +35,6 @@ class Producer:
         self.num_replicas = num_replicas
         self.kafka_client = AdminClient({'bootstrap.servers': BROKER_URLS})
 
-        #
-        #
-        # TODO: Configure the broker properties below. Make sure to reference the project README
-        # and use the Host URL for Kafka and Schema Registry!
-        #
-        #
         self.broker_properties = {
             'bootstrap.servers': BROKER_URLS,
             'schema.registry.url': SCHEMA_REGISTRY_URL

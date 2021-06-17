@@ -40,7 +40,7 @@ class Station(Producer):
 
         # Use a versioning so we do not have to setup the docker container once we run into schema conflicts
         # TODO: Remove in final version
-        topic_name = f'station.{station_name}.arrival.v1'
+        topic_name = f'org.chicago.cta.station.{station_name}.arrival.v1'
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,

@@ -30,7 +30,7 @@ class TransformedStation(faust.Record):
     line: str
 
 
-CONNECT_TOPIC_NAME = 'cta.information.stations'
+CONNECT_TOPIC_NAME = 'org.chicago.cta.station.information'
 TRANSFORMED_TOPIC_NAME = f'{CONNECT_TOPIC_NAME}.transformed.v1'
 
 app = faust.App(

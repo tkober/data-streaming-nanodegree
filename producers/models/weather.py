@@ -40,7 +40,7 @@ class Weather(Producer):
         # Use a versioning so we do not have to setup the docker container once we run into schema conflicts
         # TODO: Remove in final version
         super().__init__(
-            "weather.update.v1",
+            "org.chicago.cta.weather.update.v1",
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
             num_partitions= 1,
