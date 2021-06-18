@@ -9,7 +9,18 @@
     },
     {
       "name": "status",
-      "type": "string"
+      "type": {
+        "type": "enum",
+        "name": "WeatherStatus",
+        "symbols": [
+          "status",
+          "sunny",
+          "partly_cloudy",
+          "cloudy",
+          "windy",
+          "precipitation"
+        ]
+      }
     }
   ]
 }
